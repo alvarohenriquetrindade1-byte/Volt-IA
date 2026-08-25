@@ -3,6 +3,9 @@ import urllib.parse
 from google import genai
 from google.genai import types
 
+# Insira sua chave API do Gemini entre as aspas abaixo
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+
 # Configuração da página
 st.set_page_config(
     page_title="Volt IA", 
@@ -10,9 +13,16 @@ st.set_page_config(
     layout="centered"
 )
 
-# Estilização em Preto e Azul Neon
+# Estilização em Preto e Azul Neon + Ocultar rodapé e avisos do Streamlit
 st.markdown("""
 <style>
+    /* Ocultar cabeçalho, menu e rodapé padrão do Streamlit */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stAppViewerFooter {display: none !important;}
+    div[data-testid="stStatusWidget"] {display: none !important;}
+    
     .stApp {
         background: linear-gradient(180deg, #0a0c10 0%, #121824 100%);
         color: #e6edf3;
@@ -48,20 +58,14 @@ st.markdown("""
 st.title("⚡ Volt IA")
 st.caption("Converse sobre qualquer assunto: ideias, jogos, dúvidas, códigos, histórias e bate-papo!")
 
-# BARRA LATERAL
+# BARRA LATERAL (Apenas com QR Code)
 with st.sidebar:
-    st.header("⚙️ Configurações")
-    api_key = st.text_input("Sua Chave API Gemini:", type="password")
-    
-    st.markdown("---")
     st.subheader("📱 QR Code para Testar")
-    link_app = st.text_input("Link do site:", "https://meu-app.streamlit.app")
+    link_app = "https://volt-ia-2kwmutczjgrrjoihrepobg.streamlit.app/"
     
-    if link_app:
-        # Gerador de QR Code ultra leve via API
-        link_enc = urllib.parse.quote(link_app)
-        qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={link_enc}"
-        st.image(qr_url, caption="Escaneie com a câmera do celular")
+    link_enc = urllib.parse.quote(link_app)
+    qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={link_enc}"
+    st.image(qr_url, caption="Escaneie com a câmera do celular")
 
 aba_chat, aba_midia = st.tabs(["💬 Conversa Livre", "📁 Enviar Arquivos & Fotos"])
 
@@ -82,9 +86,9 @@ with aba_chat:
             st.markdown(prompt)
 
         with st.chat_message("assistant"):
-            if api_key:
+            if GEMINI_API_KEY and GEMINI_API_KEY != "SUA_CHAVE_API_AQUI":
                 try:
-                    client = genai.Client(api_key=api_key)
+                    client = genai.Client(api_key=GEMINI_API_KEY)
                     
                     contents = []
                     for m in st.session_state.historico:
@@ -103,11 +107,9 @@ with aba_chat:
                     texto_final = st.write_stream(stream_wrapper())
                     st.session_state.historico.append({"role": "assistant", "content": texto_final})
                 except Exception as e:
-                    st.error(f"Erro: {str(e)}")
+                    st.error(f"Erro ao processar: {str(e)}")
             else:
-                resposta_demo = f"Você disse: **'{prompt}'**.\n\nPara responder com inteligência total sobre qualquer tema, insira sua Chave API no menu lateral!"
-                st.markdown(resposta_demo)
-                st.session_state.historico.append({"role": "assistant", "content": resposta_demo})
+                st.error("Chave API não configurada no código!")
 
 # ABA 2: ENVIO DE ARQUIVOS
 with aba_midia:
