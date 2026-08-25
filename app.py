@@ -1,22 +1,16 @@
 import streamlit as st
 import urllib.parse
 from google import genai
-from google.genai import types
 
-# Insira sua chave API do Gemini entre as aspas abaixo
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-
-# Configuração da página
+# Ocultar cabeçalhos, rodapés e avisos do Streamlit
 st.set_page_config(
     page_title="Volt IA", 
     page_icon="⚡", 
     layout="centered"
 )
 
-# Estilização em Preto e Azul Neon + Ocultar rodapé e avisos do Streamlit
 st.markdown("""
 <style>
-    /* Ocultar cabeçalho, menu e rodapé padrão do Streamlit */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
@@ -58,7 +52,7 @@ st.markdown("""
 st.title("⚡ Volt IA")
 st.caption("Converse sobre qualquer assunto: ideias, jogos, dúvidas, códigos, histórias e bate-papo!")
 
-# BARRA LATERAL (Apenas com QR Code)
+# BARRA LATERAL
 with st.sidebar:
     st.subheader("📱 QR Code para Testar")
     link_app = "https://volt-ia-2kwmutczjgrrjoihrepobg.streamlit.app/"
@@ -86,30 +80,20 @@ with aba_chat:
             st.markdown(prompt)
 
         with st.chat_message("assistant"):
-            if GEMINI_API_KEY and GEMINI_API_KEY != "SUA_CHAVE_API_AQUI":
-                try:
-                    client = genai.Client(api_key=GEMINI_API_KEY)
-                    
-                    contents = []
-                    for m in st.session_state.historico:
-                        role = "user" if m["role"] == "user" else "model"
-                        contents.append(types.Content(role=role, parts=[types.Part.from_text(text=m["content"])]))
-                    
-                    response = client.models.generate_content_stream(
-                        model='gemini-2.5-flash',
-                        contents=contents
-                    )
-                    
-                    def stream_wrapper():
-                        for chunk in response:
-                            yield chunk.text
-
-                    texto_final = st.write_stream(stream_wrapper())
-                    st.session_state.historico.append({"role": "assistant", "content": texto_final})
-                except Exception as e:
-                    st.error(f"Erro ao processar: {str(e)}")
-            else:
-                st.error("Chave API não configurada no código!")
+            try:
+                # Puxa a chave cadastrada nos Secrets
+                api_key = st.secrets["GEMINI_API_KEY"]
+                client = genai.Client(api_key=api_key)
+                
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=prompt
+                )
+                
+                st.markdown(response.text)
+                st.session_state.historico.append({"role": "assistant", "content": response.text})
+            except Exception as e:
+                st.error(f"Erro ao processar: {str(e)}")
 
 # ABA 2: ENVIO DE ARQUIVOS
 with aba_midia:
