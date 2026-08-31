@@ -4,7 +4,7 @@ from google import genai
 
 # Ocultar cabeçalhos, rodapés e avisos do Streamlit
 st.set_page_config(
-    page_title="Volt IA", 
+    page_title="Mentor IA", 
     page_icon="⚡", 
     layout="centered"
 )
@@ -49,7 +49,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("⚡ Volt IA")
+st.title("⚡ Mentor IA")
 st.caption("Converse sobre qualquer assunto: ideias, jogos, dúvidas, códigos, histórias e bate-papo!")
 
 # BARRA LATERAL
@@ -67,7 +67,7 @@ aba_chat, aba_midia = st.tabs(["💬 Conversa Livre", "📁 Enviar Arquivos & Fo
 with aba_chat:
     if "historico" not in st.session_state:
         st.session_state.historico = [
-            {"role": "assistant", "content": "Olá! Sou a Volt IA. Podemos conversar sobre qualquer assunto! Como posso te ajudar hoje?"}
+            {"role": "assistant", "content": "Olá! Sou o Mentor IA. Podemos conversar sobre qualquer assunto! Como posso te ajudar hoje?"}
         ]
 
     for msg in st.session_state.historico:
