@@ -1,6 +1,7 @@
 import streamlit as st
 import urllib.parse
 from google import genai
+from streamlit_mic_recorder import mic_recorder
 
 # Configuração da página
 st.set_page_config(
@@ -9,7 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Estilização e correção do campo de texto
+# Estilização com a cor da fonte alterada para PRETO
 st.markdown("""
 <style>
     /* Ocultar elementos padrão do Streamlit */
@@ -22,30 +23,38 @@ st.markdown("""
     /* Fundo geral */
     .stApp {
         background: linear-gradient(180deg, #0a0c10 0%, #121824 100%);
-        color: #e6edf3;
-    }
-    h1, h2, h3, p, span {
-        color: #e6edf3 !important;
+        color: #000000;
     }
     
-    /* Balões de Mensagem */
+    /* Balões de Mensagem com fundo claro e texto preto para alto contraste */
     .stChatMessage {
-        background-color: rgba(22, 27, 34, 0.7) !important;
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(0, 210, 255, 0.25);
+        background-color: #ffffff !important;
+        border: 1px solid rgba(0, 210, 255, 0.3);
         border-radius: 16px !important;
         padding: 14px;
         margin-bottom: 12px;
+        color: #000000 !important;
     }
-    
-    /* Correção do Campo de Texto (Input) */
-    .stChatInputContainer textarea, 
-    .stChatInputContainer input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        background-color: #161b22 !important;
-        border: 1px solid #00d2ff !important;
-        border-radius: 20px !important;
+
+    .stChatMessage p, .stChatMessage span {
+        color: #000000 !important;
+    }
+
+    /* Correção do Campo de Texto (Input) - Fonte em PRETO com fundo claro */
+    .stChatInput textarea, 
+    .stChatInput input,
+    div[data-baseweb="textarea"] textarea,
+    div[data-baseweb="input"] input {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        background-color: #ffffff !important;
+        caret-color: #0072ff !important;
+    }
+
+    /* Textos auxiliares e marcadores em preto */
+    .stChatInput textarea::placeholder {
+        color: #555555 !important;
+        -webkit-text-fill-color: #555555 !important;
     }
     
     /* Botões */
@@ -72,7 +81,7 @@ with st.sidebar:
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={link_enc}"
     st.image(qr_url, caption="Escaneie com a câmera do celular")
 
-aba_chat, aba_midia = st.tabs(["💬 Conversa Livre", "📁 Enviar Arquivos & Fotos"])
+aba_chat, aba_voz, aba_midia = st.tabs(["💬 Conversa Livre", "🎙️ Chat de Voz", "📁 Enviar Arquivos & Fotos"])
 
 # ABA 1: CHAT LIVRE
 with aba_chat:
@@ -96,7 +105,7 @@ with aba_chat:
                 client = genai.Client(api_key=api_key)
                 
                 response = client.models.generate_content_stream(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.6-flash',
                     contents=prompt
                 )
                 
@@ -109,7 +118,21 @@ with aba_chat:
             except Exception as e:
                 st.error(f"Erro ao processar: {str(e)}")
 
-# ABA 2: ENVIO DE ARQUIVOS
+# ABA 2: CHAT DE VOZ
+with aba_voz:
+    st.subheader("🎙️ Enviar mensagem de voz")
+    st.write("Clique no botão abaixo para gravar seu áudio:")
+    
+    audio = mic_recorder(
+        start_prompt="🔴 Iniciar Gravação",
+        stop_prompt="⬛ Parar Gravação",
+        key='recorder'
+    )
+
+    if audio:
+        st.audio(audio['bytes'], format='audio/wav')
+
+# ABA 3: ENVIO DE ARQUIVOS
 with aba_midia:
     st.subheader("📷 Análise de Arquivos")
     arquivo = st.file_uploader("Escolha um arquivo para enviar:", type=["png", "jpg", "jpeg", "pdf", "txt"])
