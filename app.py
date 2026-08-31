@@ -10,7 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Estilização com a cor da fonte alterada para PRETO
+# Estilização forçada em TEMA CLARO (Fundo branco e texto preto)
 st.markdown("""
 <style>
     /* Ocultar elementos padrão do Streamlit */
@@ -20,27 +20,32 @@ st.markdown("""
     .stAppViewerFooter {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
     
-    /* Fundo geral */
+    /* Fundo geral em branco */
     .stApp {
-        background: linear-gradient(180deg, #0a0c10 0%, #121824 100%);
-        color: #000000;
+        background-color: #ffffff !important;
+        color: #111827 !important;
     }
     
-    /* Balões de Mensagem com fundo claro e texto preto para alto contraste */
+    /* Títulos, textos e legendas em escuro */
+    h1, h2, h3, p, span, label {
+        color: #111827 !important;
+    }
+    
+    /* Balões de Mensagem em fundo suave e borda destacada */
     .stChatMessage {
-        background-color: #ffffff !important;
-        border: 1px solid rgba(0, 210, 255, 0.3);
+        background-color: #f3f4f6 !important;
+        border: 1px solid #d1d5db !important;
         border-radius: 16px !important;
         padding: 14px;
         margin-bottom: 12px;
-        color: #000000 !important;
+        color: #111827 !important;
     }
 
     .stChatMessage p, .stChatMessage span {
-        color: #000000 !important;
+        color: #111827 !important;
     }
 
-    /* Correção do Campo de Texto (Input) - Fonte em PRETO com fundo claro */
+    /* Campo de Texto de entrada com fundo claro e fonte bem visível */
     .stChatInput textarea, 
     .stChatInput input,
     div[data-baseweb="textarea"] textarea,
@@ -48,16 +53,17 @@ st.markdown("""
         color: #000000 !important;
         -webkit-text-fill-color: #000000 !important;
         background-color: #ffffff !important;
+        border: 1px solid #0072ff !important;
         caret-color: #0072ff !important;
     }
 
-    /* Textos auxiliares e marcadores em preto */
+    /* Texto de dica no campo de digitação */
     .stChatInput textarea::placeholder {
-        color: #555555 !important;
-        -webkit-text-fill-color: #555555 !important;
+        color: #6b7280 !important;
+        -webkit-text-fill-color: #6b7280 !important;
     }
     
-    /* Botões */
+    /* Botões estilizados */
     .stButton>button {
         background: linear-gradient(90deg, #0072ff, #00d2ff) !important;
         color: #ffffff !important;
@@ -105,7 +111,7 @@ with aba_chat:
                 client = genai.Client(api_key=api_key)
                 
                 response = client.models.generate_content_stream(
-                    model='gemini-3.6-flash',
+                    model='gemini-2.5-flash',
                     contents=prompt
                 )
                 
