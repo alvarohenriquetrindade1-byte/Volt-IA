@@ -81,17 +81,21 @@ with aba_chat:
 
         with st.chat_message("assistant"):
             try:
-                # Puxa a chave cadastrada nos Secrets
                 api_key = st.secrets["GEMINI_API_KEY"]
                 client = genai.Client(api_key=api_key)
                 
-                response = client.models.generate_content(
-                    model='gemini-3.6-flash',
+                # Chamada via Streaming para resposta instantânea palavra por palavra
+                response = client.models.generate_content_stream(
+                    model='gemini-2.5-flash',
                     contents=prompt
                 )
                 
-                st.markdown(response.text)
-                st.session_state.historico.append({"role": "assistant", "content": response.text})
+                def stream_wrapper():
+                    for chunk in response:
+                        yield chunk.text
+
+                texto_final = st.write_stream(stream_wrapper())
+                st.session_state.historico.append({"role": "assistant", "content": texto_final})
             except Exception as e:
                 st.error(f"Erro ao processar: {str(e)}")
 
