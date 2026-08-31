@@ -10,7 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Estilização Tema Azul & Preto com alta legibilidade
+# Estilização Tema Azul & Preto com correção nas tags de texto interno
 st.markdown("""
 <style>
     /* Ocultar elementos padrão do Streamlit */
@@ -23,13 +23,14 @@ st.markdown("""
     /* Fundo geral em degradê Preto e Azul Escuro */
     .stApp {
         background: linear-gradient(180deg, #050b14 0%, #0a192f 100%) !important;
-        color: #e6f1ff !important;
+        color: #ffffff !important;
     }
     
-    /* Títulos e textos gerais em branco/azul claro */
-    h1, h2, h3, p, label {
-        color: #e6f1ff !important;
+    /* Forçar cor BRANCA para todo tipo de texto global e Markdown */
+    .stApp p, .stApp span, .stApp h1, .stApp h2, .stApp h3, .stApp li, .stApp div {
+        color: #ffffff !important;
     }
+
     .stCaption {
         color: #8892b0 !important;
     }
@@ -41,11 +42,22 @@ st.markdown("""
         border-radius: 16px !important;
         padding: 14px;
         margin-bottom: 12px;
-        color: #e6f1ff !important;
     }
 
-    .stChatMessage p, .stChatMessage span {
-        color: #e6f1ff !important;
+    /* Garantir texto branco dentro do balão da IA e do usuário */
+    .stChatMessage p, 
+    .stChatMessage span, 
+    .stChatMessage li, 
+    .stChatMessage code,
+    .stChatMessage div {
+        color: #ffffff !important;
+    }
+
+    /* Blocos de código gerados pela IA */
+    .stChatMessage code {
+        background-color: #0a192f !important;
+        padding: 2px 6px;
+        border-radius: 4px;
     }
 
     /* Campo de Texto onde você digita (Fundo Branco com Letras Pretas para Legibilidade Total) */
@@ -62,7 +74,7 @@ st.markdown("""
         font-weight: 500 !important;
     }
 
-    /* Texto de dica (placeholder) */
+    /* Texto de dica no campo de digitação */
     .stChatInput textarea::placeholder {
         color: #555555 !important;
         -webkit-text-fill-color: #555555 !important;
@@ -116,9 +128,9 @@ with aba_chat:
                 client = genai.Client(api_key=api_key)
                 
                 response = client.models.generate_content_stream(
-    model='gemini-3.6-flash',
-    contents=prompt
-)
+                    model='gemini-3.6-flash',
+                    contents=prompt
+                )
                 
                 def stream_wrapper():
                     for chunk in response:
