@@ -10,7 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Estilização forçada em TEMA CLARO (Fundo branco e texto preto)
+# Estilização Tema Azul & Preto com alta legibilidade
 st.markdown("""
 <style>
     /* Ocultar elementos padrão do Streamlit */
@@ -20,32 +20,35 @@ st.markdown("""
     .stAppViewerFooter {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
     
-    /* Fundo geral em branco */
+    /* Fundo geral em degradê Preto e Azul Escuro */
     .stApp {
-        background-color: #ffffff !important;
-        color: #111827 !important;
+        background: linear-gradient(180deg, #050b14 0%, #0a192f 100%) !important;
+        color: #e6f1ff !important;
     }
     
-    /* Títulos, textos e legendas em escuro */
-    h1, h2, h3, p, span, label {
-        color: #111827 !important;
+    /* Títulos e textos gerais em branco/azul claro */
+    h1, h2, h3, p, label {
+        color: #e6f1ff !important;
+    }
+    .stCaption {
+        color: #8892b0 !important;
     }
     
-    /* Balões de Mensagem em fundo suave e borda destacada */
+    /* Balões de Mensagem */
     .stChatMessage {
-        background-color: #f3f4f6 !important;
-        border: 1px solid #d1d5db !important;
+        background-color: #112240 !important;
+        border: 1px solid #233554 !important;
         border-radius: 16px !important;
         padding: 14px;
         margin-bottom: 12px;
-        color: #111827 !important;
+        color: #e6f1ff !important;
     }
 
     .stChatMessage p, .stChatMessage span {
-        color: #111827 !important;
+        color: #e6f1ff !important;
     }
 
-    /* Campo de Texto de entrada com fundo claro e fonte bem visível */
+    /* Campo de Texto onde você digita (Fundo Branco com Letras Pretas para Legibilidade Total) */
     .stChatInput textarea, 
     .stChatInput input,
     div[data-baseweb="textarea"] textarea,
@@ -53,22 +56,24 @@ st.markdown("""
         color: #000000 !important;
         -webkit-text-fill-color: #000000 !important;
         background-color: #ffffff !important;
-        border: 1px solid #0072ff !important;
-        caret-color: #0072ff !important;
+        border: 2px solid #64ffda !important;
+        border-radius: 12px !important;
+        caret-color: #000000 !important;
+        font-weight: 500 !important;
     }
 
-    /* Texto de dica no campo de digitação */
+    /* Texto de dica (placeholder) */
     .stChatInput textarea::placeholder {
-        color: #6b7280 !important;
-        -webkit-text-fill-color: #6b7280 !important;
+        color: #555555 !important;
+        -webkit-text-fill-color: #555555 !important;
     }
     
-    /* Botões estilizados */
+    /* Botões em Gradiente Azul Neón */
     .stButton>button {
-        background: linear-gradient(90deg, #0072ff, #00d2ff) !important;
+        background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc) !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 16px !important;
+        border-radius: 12px !important;
         font-weight: bold !important;
         padding: 8px 20px !important;
     }
