@@ -116,9 +116,9 @@ with aba_chat:
                 client = genai.Client(api_key=api_key)
                 
                 response = client.models.generate_content_stream(
-                   model='gemini-3.6-flash'
-                    contents=prompt
-                )
+    model='gemini-3.6-flash',
+    contents=prompt
+)
                 
                 def stream_wrapper():
                     for chunk in response:
