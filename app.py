@@ -2,21 +2,24 @@ import streamlit as st
 import urllib.parse
 from google import genai
 
-# Ocultar cabeçalhos, rodapés e avisos do Streamlit
+# Configuração da página
 st.set_page_config(
     page_title="Mentor IA", 
     page_icon="⚡", 
     layout="centered"
 )
 
+# Estilização e correção do campo de texto
 st.markdown("""
 <style>
+    /* Ocultar elementos padrão do Streamlit */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     .stAppViewerFooter {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
     
+    /* Fundo geral */
     .stApp {
         background: linear-gradient(180deg, #0a0c10 0%, #121824 100%);
         color: #e6edf3;
@@ -24,6 +27,8 @@ st.markdown("""
     h1, h2, h3, p, span {
         color: #e6edf3 !important;
     }
+    
+    /* Balões de Mensagem */
     .stChatMessage {
         background-color: rgba(22, 27, 34, 0.7) !important;
         backdrop-filter: blur(8px);
@@ -32,12 +37,18 @@ st.markdown("""
         padding: 14px;
         margin-bottom: 12px;
     }
+    
+    /* Correção do Campo de Texto (Input) */
+    .stChatInputContainer textarea, 
     .stChatInputContainer input {
-        background-color: #161b22 !important;
         color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        background-color: #161b22 !important;
         border: 1px solid #00d2ff !important;
         border-radius: 20px !important;
     }
+    
+    /* Botões */
     .stButton>button {
         background: linear-gradient(90deg, #0072ff, #00d2ff) !important;
         color: #ffffff !important;
@@ -84,7 +95,6 @@ with aba_chat:
                 api_key = st.secrets["GEMINI_API_KEY"]
                 client = genai.Client(api_key=api_key)
                 
-                # Chamada via Streaming para resposta instantânea palavra por palavra
                 response = client.models.generate_content_stream(
                     model='gemini-2.5-flash',
                     contents=prompt
